@@ -41,7 +41,10 @@ func TestLoadFromFile(t *testing.T) {
 
 func TestGetSectionNames(t *testing.T) {
 	i := Iniparser{}
-	i.LoadFromFile("test.ini")
+	err:=i.LoadFromFile("test.ini")
+	if err!=nil{
+		t.Fatal(err)
+	}
 	got := i.GetSectionNames()
 	want := []string{"owner"}
 	if !reflect.DeepEqual(want, got) {
@@ -51,7 +54,10 @@ func TestGetSectionNames(t *testing.T) {
 
 func TestGetSections(t *testing.T) {
 	i := Iniparser{}
-	i.LoadFromFile("test.ini")
+	err:=i.LoadFromFile("test.ini")
+	if err!=nil{
+		t.Fatal(err)
+	}
 	got := i.GetSections()
 	want := map[string]map[string]string{"owner": {"name": "John Doe", "organization": "Acme Widgets Inc."}}
 	if !reflect.DeepEqual(want, got) {
@@ -61,7 +67,10 @@ func TestGetSections(t *testing.T) {
 
 func TestGet(t *testing.T) {
 	i := Iniparser{}
-	i.LoadFromFile("test.ini")
+	err:=i.LoadFromFile("test.ini")
+	if err!=nil{
+		t.Fatal(err)
+	}
 	t.Run("Get existing key", func(t *testing.T) {
 		got, err := i.Get("owner", "name")
 		want := "John Doe"
@@ -97,7 +106,10 @@ func TestGet(t *testing.T) {
 
 func TestSet(t *testing.T) {
 	i := Iniparser{}
-	i.LoadFromFile("test.ini")
+	err:=i.LoadFromFile("test.ini")
+	if err!=nil{
+		t.Fatal(err)
+	}
 	t.Run("Set a key to existing section", func(t *testing.T) {
 		err := i.Set("owner", "name", "Alex Doe")
 		if err != nil {
@@ -119,7 +131,10 @@ func TestSet(t *testing.T) {
 
 func TestToString(t *testing.T) {
 	i := Iniparser{}
-	i.LoadFromFile("test.ini")
+	err:=i.LoadFromFile("test.ini")
+	if err!=nil{
+		t.Fatal(err)
+	}
 	got := i.ToString()
 	want := `[owner]
 name = John Doe
@@ -133,7 +148,10 @@ organization = Acme Widgets Inc.
 
 func TestSaveToFile(t *testing.T) {
 	i := Iniparser{}
-	i.LoadFromFile("test.ini")
+	err:=i.LoadFromFile("test.ini")
+	if err!=nil{
+		t.Fatal(err)
+	}
 	t.Run("Save to correct file name", func(t *testing.T) {
 		err := i.SaveToFile("test2.ini")
 		if err != nil {
