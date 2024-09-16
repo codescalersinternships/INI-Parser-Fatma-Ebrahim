@@ -1,11 +1,16 @@
 package main
 
 import (
-	"flag"
+	"errors"
 	"fmt"
-	"log"
 	"os"
 	"strings"
+	"sort"
+)
+
+var (
+	ErrSectionNotExists = errors.New("Section doesn't exist")
+	ErrKeyNotExists     = errors.New("cKey doesn't exist")
 )
 
 type Iniparser struct {
@@ -20,14 +25,14 @@ func (i *Iniparser) LoadFromString(config string) {
 	m := map[string]string{}
 
 	for _, line := range lines {
-		line = strings.Join(strings.Fields(line), "")
+		line:=strings.TrimSpace(line)
 		if len(line) != 0 {
 			if line[0] == '[' {
 				section = strings.Replace(line, "[", "", 1)
 				section = strings.Replace(section, "]", "", 1)
 				m = make(map[string]string)
 			} else if line[0] != '#' && line[0] != ';' {
-				pair := strings.Split(line, "=")
+				pair := strings.Split(line, " = ")
 				m[pair[0]] = pair[1]
 				i.sections[section] = m
 			}
@@ -54,6 +59,7 @@ func (i *Iniparser) GetSectionNames() []string {
 	for section := range i.sections {
 		sectionnames = append(sectionnames, section)
 	}
+	sort.Strings(sectionnames)
 	return sectionnames
 
 }
@@ -73,10 +79,9 @@ func (i *Iniparser) Get(sectionname, key string) (string, error) {
 		if exist {
 			return value, nil
 		}
-		return "", fmt.Errorf("the key: %s within the section: %s doesn't exist", key, sectionname)
-
+		return "", ErrKeyNotExists
 	}
-	return "", fmt.Errorf("the section: %s doesn't exist", sectionname)
+	return "", ErrSectionNotExists
 }
 
 // a method that recieves section name, key and value then add the key and value to this section
@@ -87,17 +92,24 @@ func (i *Iniparser) Set(sectionname, key, value string) error {
 		section[key] = value
 		return nil
 	}
-	return fmt.Errorf("the key: %s within the section: %s doesn't exist", key, sectionname)
+	return ErrSectionNotExists
 }
 
 // a method that returns the data stored in the iniparser as a string of sections, keys and values
 func (i *Iniparser) ToString() string {
 	lines := ""
-	for section := range i.sections {
-		lines += ("[" + section + "] \n")
+	sections:=i.GetSectionNames()
+	for _,section := range sections {
+		lines += ("[" + section + "]\n")
+		
 		m := i.sections[section]
-		for i := range m {
-			lines += (i + " = " + m[i] + "\n")
+		keys:=[]string{}
+		for key := range m {
+			keys = append(keys, key)
+		}
+		sort.Strings(keys)
+		for _,key := range keys {
+			lines += (key + " = " + m[key] + "\n")
 		}
 		lines += "\n"
 	}
@@ -117,45 +129,3 @@ func (i *Iniparser) SaveToFile(filename string) error {
 
 }
 
-func main() {
-	flag.Parse()
-	i := Iniparser{}
-	// err := i.LoadFromFile(flag.Arg(0))
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// fmt.Println(i.GetSections())
-	// fmt.Println(i.GetSectionNames())
-
-	// err = i.Set("DEFAULT", "key", "value")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// value, err := i.Get("DEFAULT", "key")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// fmt.Println(value)
-	// fmt.Println(i.GetSections())
-
-	// err = i.SaveToFile("test.ini")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	i.LoadFromString(`    [DEFAULT]
-ServerAliveInterval = 45
-    Compression=yes
-CompressionLevel = 9
-ForwardX11 = yes
-#comment
-;comment
-
-[forge.example]
-User = hg `)
-	err := i.SaveToFile("test2.ini")
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(i.ToString())
-
-}
