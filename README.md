@@ -1,6 +1,6 @@
 # INI-Parser-Fatma-Ebrahim
 
-This repository contains an implementation of INI parser that provides functionality to load, retrieve and modify data from `.ini` configuration files. INI files are commonly used for configuration purposes where data is organized into sections, keys, and values.
+This repository contains an implementation of INI parser package that provides functionality to load, retrieve and modify data from `.ini` configuration files. INI files are commonly used for configuration purposes where data is organized into sections, keys, and values.
 
 ## Features
 
@@ -43,3 +43,29 @@ Returns a string representation of the INI structure.
 
 ### `SaveToFile(filename string) error`
 Saves the INI structure to a file. Returns an error if file writing fails.
+
+## How to Use:
+  ### Step 1: Install the Package Using `go get`
+
+  ```bash
+  go get github.com/codescalersinternships/INI-Parser-Fatma-Ebrahim
+  ```
+
+  This command fetches the package and adds it to your project's `go.mod` file.
+
+  ### Step 2: Import and Use the Package in Your Code
+
+  After running `go get`, you can import the package into your project and use the functions as described:
+
+  ```go
+  package main
+
+  import (
+      "github.com/codescalersinternships/INI-Parser-Fatma-Ebrahim" 
+  )
+
+  func main() {
+      i := iniparser.Iniparser{}
+     //Now you can use all the methods in the package
+  }
+  ```
