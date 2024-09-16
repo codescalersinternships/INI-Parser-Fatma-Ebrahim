@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"strings"
 	"sort"
+	"strings"
 )
 
 var (
@@ -25,7 +25,7 @@ func (i *Iniparser) LoadFromString(config string) {
 	m := map[string]string{}
 
 	for _, line := range lines {
-		line:=strings.TrimSpace(line)
+		line := strings.TrimSpace(line)
 		if len(line) != 0 {
 			if line[0] == '[' {
 				section = strings.Replace(line, "[", "", 1)
@@ -98,17 +98,17 @@ func (i *Iniparser) Set(sectionname, key, value string) error {
 // a method that returns the data stored in the iniparser as a string of sections, keys and values
 func (i *Iniparser) ToString() string {
 	lines := ""
-	sections:=i.GetSectionNames()
-	for _,section := range sections {
+	sections := i.GetSectionNames()
+	for _, section := range sections {
 		lines += ("[" + section + "]\n")
-		
+
 		m := i.sections[section]
-		keys:=[]string{}
+		keys := []string{}
 		for key := range m {
 			keys = append(keys, key)
 		}
 		sort.Strings(keys)
-		for _,key := range keys {
+		for _, key := range keys {
 			lines += (key + " = " + m[key] + "\n")
 		}
 		lines += "\n"
@@ -128,4 +128,3 @@ func (i *Iniparser) SaveToFile(filename string) error {
 	return nil
 
 }
-

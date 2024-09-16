@@ -131,21 +131,21 @@ organization = Acme Widgets Inc.
 	}
 }
 
-func TestSaveToFile(t * testing.T){
+func TestSaveToFile(t *testing.T) {
 	i := Iniparser{}
 	i.LoadFromFile("test.ini")
 	t.Run("Save to correct file name", func(t *testing.T) {
-		err:=i.SaveToFile("test2.ini")
-	if err!=nil{
-		t.Errorf("expected: %s, got: %s", "nil", err)
-	}
+		err := i.SaveToFile("test2.ini")
+		if err != nil {
+			t.Errorf("expected: %s, got: %s", "nil", err)
+		}
 	})
 
 	t.Run("Save to incorrect file name", func(t *testing.T) {
-		err:=i.SaveToFile("")
-	if err==nil{
-		t.Fatal("expected an error and recieved nil")
-	}
+		err := i.SaveToFile("")
+		if err == nil {
+			t.Fatal("expected an error and recieved nil")
+		}
 	})
 
 }
