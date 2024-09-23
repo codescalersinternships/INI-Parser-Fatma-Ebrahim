@@ -13,11 +13,6 @@ This repository contains an implementation of INI parser package that provides f
 7. **Save to File**: Save the current state of the INI parser to a file.
 8. **ToString**: Convert the current state of the INI parser to a string format that follows the INI file structure.
 
-
-### `Iniparser` Struct
-
-- `sections`: A map representing sections of the INI file. Each section maps to another map of key-value pairs.
-
 ## Functions
 
 ### `LoadFromString(config string)`
