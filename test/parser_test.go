@@ -13,12 +13,12 @@ func TestLoadFromString(t *testing.T) {
 		err := i.LoadFromString(`[owner]
 	name = John Doe
 	organization = Acme Widgets Inc.`)
-		want := "John Doe"
-		got := i.Sections["owner"]["name"]
+		want := map[string]map[string]string{"owner": {"name": "John Doe", "organization": "Acme Widgets Inc."}}
+		got := i.Sections
 		if err != nil {
 			t.Errorf("expected: %s, got: %s", "nil", err)
 		}
-		if want != got {
+		if !reflect.DeepEqual(want, got) {
 			t.Errorf("expected: %s, got: %s", want, got)
 		}
 	})
@@ -28,12 +28,12 @@ func TestLoadFromString(t *testing.T) {
 	name = John Doe
 	;comment2
 	organization = Acme Widgets Inc.`)
-		want := "John Doe"
-		got := i.Sections["owner"]["name"]
+		want := map[string]map[string]string{"owner": {"name": "John Doe", "organization": "Acme Widgets Inc."}}
+		got := i.Sections
 		if err != nil {
 			t.Errorf("expected: %s, got: %s", "nil", err)
 		}
-		if want != got {
+		if !reflect.DeepEqual(want, got) {
 			t.Errorf("expected: %s, got: %s", want, got)
 		}
 	})
@@ -55,6 +55,17 @@ func TestLoadFromString(t *testing.T) {
 		}
 
 	})
+	t.Run("invalid ini string with global keys", func(t *testing.T) {
+		err := i.LoadFromString(`
+		global key = value
+		owner
+		name = John Doe
+		organization = Acme Widgets Inc.`)
+		if err == nil {
+			t.Errorf("expected: %s, got: %s", err, "nil")
+		}
+
+	})
 }
 
 func TestLoadFromFile(t *testing.T) {
@@ -63,6 +74,11 @@ func TestLoadFromFile(t *testing.T) {
 		err := i.LoadFromFile("../testdata/validtest.ini")
 		if err != nil {
 			t.Errorf("expected: %s, got: %s", "nil", err)
+		}
+		want := map[string]map[string]string{"owner": {"name": "John Doe", "organization": "Acme Widgets Inc."}}
+		got := i.Sections
+		if !reflect.DeepEqual(want, got) {
+			t.Errorf("expected: %s, got: %s", want, got)
 		}
 
 	})

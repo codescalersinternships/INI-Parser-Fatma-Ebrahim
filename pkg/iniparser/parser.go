@@ -31,11 +31,14 @@ func (i *Parser) LoadFromString(config string) error {
 		}
 
 		if !strings.HasPrefix(line, "[") && !strings.HasSuffix(line, "]") {
-			pair := strings.Split(line, " = ")
+			pair := strings.Split(line, "=")
 			if len(pair) != 2 {
 				return fmt.Errorf("invalid line: %s", line)
 			}
-			m[pair[0]] = pair[1]
+			m[strings.TrimSpace(pair[0])] = strings.TrimSpace(pair[1])
+			if section == "" {
+				return fmt.Errorf("invalid global key: %s", line)
+			}
 			i.Sections[section] = m
 		} else if strings.HasPrefix(line, "[") && strings.HasSuffix(line, "]") {
 			section = line[1 : len(line)-1]
